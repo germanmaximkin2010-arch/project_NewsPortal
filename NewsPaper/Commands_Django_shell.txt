@@ -1,0 +1,101 @@
+1. User1 = User.objects.create_user(username = "Максим")
+   User2 = User.objects.create_user(username = "Артур")
+
+
+2. Author1 = Author.objects.create(user = User1)
+   Author2 = Author.objects.create(user = User2)
+
+
+3. Category1 = Category.objects.create(category = "Звёзды")
+   Category2 = Category.objects.create(category = "Полезные советы")
+   Category3 = Category.objects.create(category = "Спорт")
+   Category4 = Category.objects.create(category = "Политика")
+
+
+4. Post1 = Post.objects.create( author = Author1,
+                                title = "Россия сегодня",
+                                content = "Что-то там про политику.",
+                                type = "NW")
+
+   Post2 = Post.objects.create( author = Author2,
+                                title = "Известная певица рассказывает как правильно ухаживать за кожей лица",
+                                            content = "Уход за кожей лица — это обязательное условие её привлекательности и здоровья. Каждый тип кожи уникален и требует индивидуального подхода, но существуют общие правила ухода, актуальные для всех.
+                                            Ежедневный уход за кожей лица должен включать несколько этапов:
+                                            Очищение. Без этого шага остальные этапы ухода не принесут пользы, так как забитые поры не позволят косметическим средствам эффективно работать. Очищать кожу необходимо дважды в день — утром и вечером.
+                                            Тонизация. На этом этапе удаляют остатки очищающих средств, кожа пробуждается, активизируется процесс клеточного дыхания, происходит подготовка к воздействию крема. Тоник для сухой кожи способствует удержанию в клетках эпидермиса влаги, а продукты для жирного типа позволяют сузить поры и нормализовать работу сальных желёз.
+                                            Увлажнение. При дефиците воды кожные покровы становятся сухими, истончёнными, повышается риск механических повреждений и быстрого старения. Для увлажнения можно применять различные косметические средства: крема, гели, флюиды, сыворотки.
+                                            Питание. Питательный крем снабжает кожу витаминами и микроэлементами, смягчает дерму, предотвращает возникновение раздражений. Крем повышает плотность кожных покровов, помогает бороться с появлением мелких морщин.
+                                            Защита. Кожу лица нужно защищать от внешних воздействий как ветер, пыль, снег, активные ультрафиолетовые лучи в зависимости от сезона." ,
+                                type = "AR")
+
+   Post3 = Post.objects.create( author = Author1,
+                                title = "Статья о французском форварде Усмане Дембеле.",
+                                content = "В декабре 2025 года Международная федерация футбола (ФИФА) объявила,
+                                            что Дембеле признан лучшим футболистом мира по итогам 2025 года.
+                                            Награду ему вручила ФИФА на церемонии в Дохе.
+                                            В прошедшем сезоне Дембеле выиграл чемпионат и Кубок Франции,
+                                            а также привёл «Пари Сен-Жермен» к победе в Лиге чемпионов.",
+                                type = "AR")
+
+
+5. PostCategory.objects.create(post = Post1, category = Category4)
+
+   PostCategory.objects.create(post = Post2, category = Category1)
+   PostCategory.objects.create(post = Post2, category = Category2)
+
+   PostCategory.objects.create(post = Post3, category = Category1)
+   PostCategory.objects.create(post = Post3, category = Category3)
+
+
+6. Comment1 = Comment.objects.create(post = Post1,
+                                     user = User2,
+                                     text_comment = "Интересные новости!")
+
+   Comment2 = Comment.objects.create(post = Post1,
+                                     user = User2,
+                                     text_comment = "В этих новостях отлично объясняются сегодняшние проблемы.")
+
+   Comment3 = Comment.objects.create(post = Post2,
+                                     user = User1
+                                     text_comment = "Я считаю что это всё посредственно и необязательно.")
+
+   Comment4 = Comment.objects.create(post = Post3,
+                                     user = User2,
+                                     text_comment = "Неправда! Лучший футболист Роналдо")
+
+
+7. Post1.like()
+   Post1.like()
+   Post1.dislike()
+
+   Post2.dislike()
+   Post2.dislike()
+   Post2.like()
+
+   Post3.like()
+   Post3.like()
+   Post3.like()
+   Post3.like()
+
+   Comment1.like()
+
+   Comment2.dislike()
+
+   Comment3.like()
+   Comment3.like()
+
+   Comment4.dislike()
+   Comment4.dislike()
+
+
+8. Author1.update_rating()
+
+   Author2.update_rating()
+
+
+9. Author.object.all().order_by("-rating").values("user__username", "rating").first()
+
+
+10. Post.objects.all().order_by("-rating").values("created_at", "author__user__username", "rating", "title", "preview").first()
+
+11. Comment.objects.all().values("created_at", "author__user__username", "rating", "text_comment")

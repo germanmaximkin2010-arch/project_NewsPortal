@@ -1,8 +1,6 @@
-from string import punctuation
-
 from django import template
 
-badwords = ['редиска','политику','картошка']
+badwords = ['редиска','картошка']
 punctuations = ['.',',']
 
 register = template.Library()
@@ -12,9 +10,13 @@ register = template.Library()
 def censor(post):
     words = post.split()
     for index, word in enumerate(words):
-        if word.lower() in badwords:
+        if word[-1] in punctuations:
+            core_word = word[:-1]
+        else:
+            core_word = word
+        if core_word.lower() in badwords:
             if word[-1] in punctuations:
-                words[index] = word[0] + '*' * len(word - 2)
+                words[index] = word[0] + '*' * (len(word) - 2) + word[-1]
             else:
-                words[index] = word[0] + '*' * len(word - 1)
-    return words
+                words[index] = word[0] + '*' * (len(word) - 1)
+    return ' '.join(words)

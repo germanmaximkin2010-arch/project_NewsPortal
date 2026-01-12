@@ -1,11 +1,30 @@
 {% extends 'flatpages/default.html' %}
 
+{% load custom_filters %}
+
 {% block title %}
-Post
+Posts
 {% endblock title %}
 
 <!-- В контенте на странице мы выводим все товары -->
 {% block content %}
-<h1>Все посты</h1>
-{{ post }}
+    <h1>Все посты {{ post|length }}</h1>
+    {% if post %}
+    <table>
+        <tr>
+            <td>Заголовок</td>
+            <td>Дата публикации</td>
+            <td>Превью</td>
+        </tr>
+        {% for p in post %}
+        <tr>
+            <td>{{ p.title|censor }}</td>
+            <td>{{ p.created_at|date:'M d Y' }}</td>
+            <td>{{ p.content|truncatewords:20|censor }}</td>
+        </tr>
+        {% endfor %}
+    {% else %}
+        <h2>Постов нет!</h2>
+    {% endif %}
+    </table>
 {% endblock content %}

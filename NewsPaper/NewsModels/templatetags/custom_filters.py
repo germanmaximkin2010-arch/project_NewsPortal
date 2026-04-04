@@ -20,3 +20,4 @@ def censor(post):
             else:
                 words[index] = word[0] + '*' * (len(word) - 1)
     return ' '.join(words)
+

@@ -1,14 +1,19 @@
 {% extends 'flatpages/default.html' %}
 
 {% load custom_filters %}
+{% load custom_tags %}
 
 {% block title %}
 Posts
 {% endblock title %}
 
-<!-- В контенте на странице мы выводим все товары -->
 {% block content %}
-    <h1>Все посты {{ post|length }}</h1>
+    <h1>Все посты: {{ page_obj.paginator.count }}</h1>
+    <form action="" method="get">
+        {{ filter.form }}
+        <input type="submit" value="Применить">
+    </form>
+    <hr>
     {% if post %}
     <table>
         <tr>
@@ -23,8 +28,27 @@ Posts
             <td>{{ p.content|truncatewords:20|censor }}</td>
         </tr>
         {% endfor %}
+    </table>
     {% else %}
         <h2>Постов нет!</h2>
     {% endif %}
-    </table>
+    {% if page_obj.has_previous %}
+       <a href="?{% url_replace page=1 %}">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {# Информация о текущей странице #}
+   {{ page_obj.number }}
+
+   {# Информация о следующих страницах #}
+   {% if page_obj.has_next %}
+       <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
 {% endblock content %}

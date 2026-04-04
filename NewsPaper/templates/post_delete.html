@@ -1,0 +1,23 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block content %}
+<h1>Удаление поста</h1>
+<hr>
+
+<form action="" method="post">
+    {% csrf_token %}
+    <table>
+        <tr>
+            <td>Дата публикации:</td>
+            <td>Содержание:</td>
+        </tr>
+        <tr>
+            <td>{{ post.created_at|date:'M d Y' }}</td>
+            <td>{{ post.content|censor}}</td>
+        </tr>
+    </table>
+    <input type="submit" value="Удалить"/>
+</form>
+{% endblock content %}

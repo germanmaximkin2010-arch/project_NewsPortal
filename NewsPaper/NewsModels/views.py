@@ -5,6 +5,10 @@ from django.shortcuts import render, redirect
 from django_filters.views import FilterView
 from .forms import *
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.models import Group
+from django.contrib.auth.decorators import login_required
+
 
 class PostList(FilterView):
     model = Post
@@ -25,6 +29,8 @@ class PostList(FilterView):
         return context
 
 
+
+
 def post_list(request):
     posts = Post.objects.all()
 
@@ -42,23 +48,27 @@ class OnePost(DetailView):
     context_object_name = 'post'
 
 
-class PostCreate(CreateView):
+class PostCreate(PermissionRequiredMixin, CreateView):
     model = Post
     template_name = 'post_create.html'
     form_class = PostForm
+    permission_required = 'NewsModels.add_post'
 
     def form_valid(self, form):
         post = form.save(commit = False)
         if 'news' in self.request.path:
             post.type = 'NW'
+        author, _ = Author.objects.get_or_create(user=self.request.user)
+        post.author = author
         post.save()
         return super().form_valid(form)
 
 
-class PostUpdate(UpdateView):
+class PostUpdate(PermissionRequiredMixin, UpdateView):
     model = Post
     template_name = 'post_update.html'
     form_class = PostForm
+    permission_required = 'NewsModels.change_post'
 
     def form_valid(self, form):
         post = form.save(commit = False)
@@ -76,6 +86,7 @@ class PostDelete(DeleteView):
     def post_delete(self):
         post = self.get_object()
         post.delete()
+
 
 def __init__():
     pass

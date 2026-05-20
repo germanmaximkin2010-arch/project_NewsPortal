@@ -4,10 +4,31 @@
 {% load custom_tags %}
 
 {% block title %}
-Все посты
+    Все посты
 {% endblock title %}
 
 {% block content %}
+    {% if user.is_authenticated %}
+        <div class="categories-wrapper">
+            <div class="categories">
+                {% for category in categories %}
+                    <div class="category-card">
+                        <div class="category-name">
+                            {{ category.category }}
+                        </div>
+                        {% if user in category.subscribers.all %}
+                            <a href="{% url 'unsubscribe' category.id %}"
+                               class="btn btn-outline-danger btn-sm">Отписаться</a>
+                        {% else %}
+                            <a href="{% url 'subscribe' category.id %}"
+                               class="btn btn-outline-success btn-sm">Подписаться</a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
     <h1>Все посты: {{ page_obj.paginator.count }}</h1>
     <form action="" method="get">
         {{ filter.form }}
@@ -15,40 +36,40 @@
     </form>
     <hr>
     {% if post %}
-    <table>
-        <tr>
-            <td>Заголовок</td>
-            <td>Дата публикации</td>
-            <td>Превью</td>
-        </tr>
-        {% for p in post %}
-        <tr>
-            <td>{{ p.title|censor }}</td>
-            <td>{{ p.created_at|date:'M d Y' }}</td>
-            <td>{{ p.content|truncatewords:20|censor }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+        <table>
+            <tr>
+                <td>Заголовок</td>
+                <td>Дата публикации</td>
+                <td>Превью</td>
+            </tr>
+            {% for p in post %}
+                <tr>
+                    <td>{{ p.title|censor }}</td>
+                    <td>{{ p.created_at|date:'M d Y' }}</td>
+                    <td>{{ p.content|truncatewords:20|censor }}</td>
+                </tr>
+            {% endfor %}
+        </table>
     {% else %}
         <h2>Постов нет!</h2>
     {% endif %}
     {% if page_obj.has_previous %}
-       <a href="?{% url_replace page=1 %}">1</a>
-       {% if page_obj.previous_page_number != 1 %}
-           ...
-           <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
-       {% endif %}
-   {% endif %}
+        <a href="?{% url_replace page=1 %}">1</a>
+        {% if page_obj.previous_page_number != 1 %}
+            ...
+            <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+        {% endif %}
+    {% endif %}
 
-   {# Информация о текущей странице #}
-   {{ page_obj.number }}
+    {# Информация о текущей странице #}
+    {{ page_obj.number }}
 
-   {# Информация о следующих страницах #}
-   {% if page_obj.has_next %}
-       <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
-       {% if paginator.num_pages != page_obj.next_page_number %}
-           ...
-           <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
-       {% endif %}
-   {% endif %}
+    {# Информация о следующих страницах #}
+    {% if page_obj.has_next %}
+        <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+        {% if paginator.num_pages != page_obj.next_page_number %}
+            ...
+            <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+        {% endif %}
+    {% endif %}
 {% endblock content %}

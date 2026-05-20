@@ -26,6 +26,7 @@ class PostList(FilterView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['filter'] = PostFilter(self.request.GET, queryset=self.get_queryset())
+        context['categories'] = Category.objects.all()
         return context
 
 
@@ -86,6 +87,21 @@ class PostDelete(DeleteView):
     def post_delete(self):
         post = self.get_object()
         post.delete()
+
+
+@login_required
+def subscribe(request, pk):
+    category = Category.objects.get(pk=pk)
+    user = request.user
+    category.subscribers.add(user)
+    return redirect(request.META['HTTP_REFERER'])
+
+@login_required
+def unsubscribe(request, pk):
+    category = Category.objects.get(pk=pk)
+    user = request.user
+    category.subscribers.remove(user)
+    return redirect(request.META['HTTP_REFERER'])
 
 
 def __init__():

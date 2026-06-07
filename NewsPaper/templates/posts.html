@@ -44,7 +44,7 @@
             </tr>
             {% for p in post %}
                 <tr>
-                    <td>{{ p.title|censor }}</td>
+                    <td><a href="{% url 'post_detail' p.id %}">{{ p.title|censor }}</a></td>
                     <td>{{ p.created_at|date:'M d Y' }}</td>
                     <td>{{ p.content|truncatewords:20|censor }}</td>
                 </tr>

@@ -166,6 +166,9 @@ EMAIL_HOST_USER = 'FiolBlack'
 EMAIL_HOST_PASSWORD = 'qiplimfaesuaqejf'
 EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER + '@yandex.ru'
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+
+ADMINS = [('admin', 'german.maximkin2010@gmail.com')]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
@@ -186,36 +189,45 @@ CACHES = {
     }
 }
 
+LOG_DIR = os.path.join(BASE_DIR, 'logs')
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'style': '{',
     'formatters': {
         'simple': {
-            'format': '%(asctime)s %(levelname)s %(message)s',
-            'datefmt': '%d.%m.%Y %H:%M:%S'
+            'format': '{asctime} {levelname} {message}',
+            'datefmt': '%d.%m.%Y %H:%M:%S',
+            'style': '{',
         },
         'simple_warning': {
-            'format': '%(pathname)s'
+            'format': '{asctime} {levelname} {message} {pathname}',
+            'style': '{',
         },
         'simple_error': {
-            'format': '%(exc_info)s'
+            'format': '{asctime} {levelname} {message} {pathname} {exc_info}',
+            'style': '{',
         },
         'verbose': {
-            'format': '%(asctime)s %(levelname)s %(module)s %(message)s',
-            'datefmt': '%d.%m.%Y %H:%M:%S'
+            'format': '{asctime} {levelname} {module} {message}',
+            'datefmt': '%d.%m.%Y %H:%M:%S',
+            'style': '{',
         },
         'verbose_': {
-            'format': '%(asctime)s %(levelname)s %(pathname)s %(message)s %(exc_info)s',
-            'datefmt': '%d.%m.%Y %H:%M:%S'
+            'format': '{asctime} {levelname} {pathname} {message} {exc_info}',
+            'datefmt': '%d.%m.%Y %H:%M:%S',
+            'style': '{',
         },
         'verbose_email': {
-            'format': '%(asctime)s %(levelname)s %(message)s %(pathname)s',
-            'datefmt': '%d.%m.%Y %H:%M:%S'
+            'format': '{asctime} {levelname} {message} {pathname}',
+            'datefmt': '%d.%m.%Y %H:%M:%S',
+            'style': '{',
         },
         'verbose_security': {
-            'format': '%(asctime)s %(levelname)s %(module)s %(message)s',
-            'datefmt': '%d.%m.%Y %H:%M:%S'
+            'format': '{asctime} {levelname} {module} {message}',
+            'datefmt': '%d.%m.%Y %H:%M:%S',
+            'style': '{',
         },
 
     },
@@ -253,24 +265,25 @@ LOGGING = {
             'level': 'INFO',
             'filters': ['require_debug_false'],
             'class': 'logging.FileHandler',
-            'filename': 'logs/general.log',
+            'filename': os.path.join(LOG_DIR, 'general.log'),
             'formatter': 'verbose',
         },
         'errors': {
             'level': 'ERROR',
             'class': 'logging.FileHandler',
-            'filename': 'logs/errors.log',
+            'filename': os.path.join(LOG_DIR, 'errors.log'),
             'formatter': 'verbose_'
         },
         'security': {
             'level': 'ERROR',
             'class': 'logging.FileHandler',
-            'filename': 'logs/security.log',
+            'filename': os.path.join(LOG_DIR, 'security.log'),
             'formatter': 'verbose_security'
         },
 
         'mail_admins': {
             'level': 'ERROR',
+            'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler',
             'formatter': 'verbose_email'
         },
@@ -279,6 +292,7 @@ LOGGING = {
 
     'loggers': {
         'django': {
+            'level': 'DEBUG',
             'handlers': ['console', 'console_warning', 'console_error', 'general'],
             'propagate': True,
         },
@@ -297,7 +311,7 @@ LOGGING = {
             'handlers': ['errors'],
             'propagate': True,
         },
-        'django.db_backends': {
+        'django.db.backends': {
             'level': 'INFO',
             'handlers': ['errors'],
             'propagate': True,
